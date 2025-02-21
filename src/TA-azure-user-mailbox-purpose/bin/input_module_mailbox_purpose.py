@@ -36,7 +36,7 @@ def get_all_users(helper, token, url):
     response = requests.get(url, headers=headers)
     
     if response.status_code > 200:
-            return None
+        return None
     
     response.raise_for_status()
     data = response.json()
