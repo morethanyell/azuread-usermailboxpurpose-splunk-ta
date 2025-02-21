@@ -33,14 +33,12 @@ def get_access_token(helper, client_id, client_secret, token_url):
 def get_all_users(helper, token, url):
     
     headers = {"Authorization": f"Bearer {token}"}
-
     response = requests.get(url, headers=headers)
     
     if response.status_code > 200:
-        return None
+            return None
     
     response.raise_for_status()
-    
     data = response.json()
 
     next_url = data.get("@odata.nextLink")
@@ -96,14 +94,13 @@ def collect_events(helper, ew):
     ctr = 0
     
     helper.log_info("Concurrent Futures, multi-thread API calls start here.")
+    helper.log_info(f"Getting all users. Will start indexing data for every pagination.")
     
     next_url = GRAPH_API_URL
     
     while next_url:
         
-        helper.log_info(f"Getting all users. Will start indexing data for every pagination.")
-        
-        users, next_url = get_all_users(helper, token, GRAPH_API_URL)
+        users, next_url = get_all_users(helper, token, next_url)
     
         with ThreadPoolExecutor(max_workers=5) as executor:
             future_to_user = {executor.submit(get_user_purpose, helper, user["id"], token): user for user in users}
